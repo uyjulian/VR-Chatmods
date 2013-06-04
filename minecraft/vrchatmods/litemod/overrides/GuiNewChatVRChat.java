@@ -17,7 +17,7 @@ public class GuiNewChatVRChat extends GuiNewChat
 {
     /** The Minecraft instance. */
     private final Minecraft mc;
-
+    
     /** A list of messages previously sent through the chat GUI */
     private final List sentMessages = new ArrayList();
 
@@ -358,9 +358,13 @@ public class GuiNewChatVRChat extends GuiNewChat
     /**
      * Gets the list of messages previously sent through the chat GUI
      */
+    
     public List getSentMessages()
     {
-        return this.sentMessages;
+    	ArrayList<String> messageReversed = new ArrayList<String>(sentMessages.size());
+    	for(int i=sentMessages.size()-1;i>=0;i--)
+    		messageReversed.add((String) sentMessages.get(i));
+    	return messageReversed;
     }
 
     /**
