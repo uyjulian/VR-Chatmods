@@ -209,11 +209,11 @@ public class GuiChatVRChat extends GuiChat
             }
             else if (par2 == 200)
             {
-                this.getSentHistory(-1);
+                this.getSentHistory(1);
             }
             else if (par2 == 208)
             {
-                this.getSentHistory(1);
+                this.getSentHistory(-1);
             }
             else if (par2 == 201)
             {
