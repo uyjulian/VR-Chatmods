@@ -28,7 +28,8 @@ public class ChatConfig
 
     private void readConfig()
     {
-        File var1 = new File(Minecraft.getAppDir("minecraft"), "mods" + File.separator + "grooohm");
+    	//TODO: Minecraft.getAppDir("minecraft")
+        File var1 = new File("", "mods" + File.separator + "grooohm");
         File var2 = new File(var1, "chat.conf");
         String var3 = "";
         String var4 = "";

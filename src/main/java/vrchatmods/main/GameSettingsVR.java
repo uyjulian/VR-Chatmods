@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.ChatLine;
 
 public class GameSettingsVR
 {

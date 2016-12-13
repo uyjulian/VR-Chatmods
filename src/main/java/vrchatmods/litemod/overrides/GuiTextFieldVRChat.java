@@ -1,7 +1,12 @@
 package vrchatmods.litemod.overrides;
 
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.src.*;
-
+import net.minecraft.util.ChatAllowedCharacters;
 
 import org.lwjgl.opengl.GL11;
 
@@ -53,9 +58,9 @@ public class GuiTextFieldVRChat extends GuiTextField
     /** True if this textbox is visible */
     private boolean visible = true;
 
-    public GuiTextFieldVRChat(FontRenderer par1FontRenderer, int par2, int par3, int par4, int par5)
+    public GuiTextFieldVRChat(int par0, FontRenderer par1FontRenderer, int par2, int par3, int par4, int par5)
     {
-    	super(par1FontRenderer, par2, par3, par4, par5);
+    	super(par0, par1FontRenderer, par2, par3, par4, par5);
         this.fontRenderer = par1FontRenderer;
         this.xPos = par2;
         this.yPos = par3;
@@ -66,7 +71,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Increments the cursor counter
      */
-    public void updateCursorCounter()
+    @Override
+	public void updateCursorCounter()
     {
         ++this.cursorCounter;
     }
@@ -74,7 +80,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Sets the text of the textbox.
      */
-    public void setText(String par1Str)
+    @Override
+	public void setText(String par1Str)
     {
         if (par1Str.length() > this.maxStringLength)
         {
@@ -91,7 +98,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Returns the text beign edited on the textbox.
      */
-    public String getText()
+    @Override
+	public String getText()
     {
         return this.text;
     }
@@ -109,10 +117,11 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * replaces selected text, or inserts text at the position on the cursor
      */
-    public void writeText(String par1Str)
+    @Override
+	public void writeText(String par1Str)
     {
         String var2 = "";
-        String var3 = ChatAllowedCharacters.filerAllowedCharacters(par1Str);
+        String var3 = ChatAllowedCharacters.filterAllowedCharacters(par1Str);
         int var4 = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
         int var5 = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
         int var6 = this.maxStringLength - this.text.length() - (var4 - this.selectionEnd);
@@ -149,7 +158,8 @@ public class GuiTextFieldVRChat extends GuiTextField
      * Deletes the specified number of words starting at the cursor position. Negative numbers will delete words left of
      * the cursor.
      */
-    public void deleteWords(int par1)
+    @Override
+	public void deleteWords(int par1)
     {
         if (this.text.length() != 0)
         {
@@ -167,7 +177,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * delete the selected text, otherwsie deletes characters from either side of the cursor. params: delete num
      */
-    public void deleteFromCursor(int par1)
+    @Override
+	public void deleteFromCursor(int par1)
     {
         if (this.text.length() != 0)
         {
@@ -205,7 +216,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * see @getNthNextWordFromPos() params: N, position
      */
-    public int getNthWordFromCursor(int par1)
+    @Override
+	public int getNthWordFromCursor(int par1)
     {
         return this.getNthWordFromPos(par1, this.getCursorPosition());
     }
@@ -213,7 +225,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * gets the position of the nth word. N may be negative, then it looks backwards. params: N, position
      */
-    public int getNthWordFromPos(int par1, int par2)
+    @Override
+	public int getNthWordFromPos(int par1, int par2)
     {
         return this.func_73798_a(par1, this.getCursorPosition(), true);
     }
@@ -263,7 +276,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Moves the text cursor by a specified number of characters and clears the selection
      */
-    public void moveCursorBy(int par1)
+    @Override
+	public void moveCursorBy(int par1)
     {
         this.setCursorPosition(this.selectionEnd + par1);
     }
@@ -271,7 +285,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * sets the position of the cursor to the provided index
      */
-    public void setCursorPosition(int par1)
+    @Override
+	public void setCursorPosition(int par1)
     {
         this.cursorPosition = par1;
         int var2 = this.text.length();
@@ -292,7 +307,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * sets the cursors position to the beginning
      */
-    public void setCursorPositionZero()
+    @Override
+	public void setCursorPositionZero()
     {
         this.setCursorPosition(0);
     }
@@ -300,7 +316,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * sets the cursors position to after the text
      */
-    public void setCursorPositionEnd()
+    @Override
+	public void setCursorPositionEnd()
     {
         this.setCursorPosition(this.text.length());
     }
@@ -308,7 +325,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Call this method from you GuiScreen to process the keys into textbox.
      */
-    public boolean textboxKeyTyped(char par1, int par2)
+    @Override
+	public boolean textboxKeyTyped(char par1, int par2)
     {
         if (this.isEnabled && this.isFocused)
         {
@@ -451,7 +469,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Args: x, y, buttonClicked
      */
-    public void mouseClicked(int par1, int par2, int par3)
+    @Override
+	public void mouseClicked(int par1, int par2, int par3)
     {
         boolean var4 = par1 >= this.xPos && par1 < this.xPos + this.width && par2 >= this.yPos && par2 < this.yPos + this.height;
 
@@ -477,7 +496,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Draws the textbox
      */
-    public void drawTextBox()
+    @Override
+	public void drawTextBox()
     {
         if (this.getVisible())
         {
@@ -575,22 +595,24 @@ public class GuiTextFieldVRChat extends GuiTextField
             par4 = var5;
         }
 
-        Tessellator var6 = Tessellator.instance;
+        Tessellator var6 = Tessellator.getInstance();
         GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
         GL11.glLogicOp(GL11.GL_OR_REVERSE);
-        var6.startDrawingQuads();
-        var6.addVertex((double)par1, (double)par4, 0.0D);
-        var6.addVertex((double)par3, (double)par4, 0.0D);
-        var6.addVertex((double)par3, (double)par2, 0.0D);
-        var6.addVertex((double)par1, (double)par2, 0.0D);
-        var6.draw();
+        //todo: fix vertical cursor
+//        var6.getWorldRenderer().startDrawingQuads();
+//        var6.getWorldRenderer().addVertex((double)par1, (double)par4, 0.0D);
+//        var6.getWorldRenderer().addVertex((double)par3, (double)par4, 0.0D);
+//        var6.getWorldRenderer().addVertex((double)par3, (double)par2, 0.0D);
+//        var6.getWorldRenderer().addVertex((double)par1, (double)par2, 0.0D);
+//        var6.draw();
         GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
-    public void setMaxStringLength(int par1)
+    @Override
+	public void setMaxStringLength(int par1)
     {
         this.maxStringLength = par1;
 
@@ -603,7 +625,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * returns the maximum number of character that can be contained in this textbox
      */
-    public int getMaxStringLength()
+    @Override
+	public int getMaxStringLength()
     {
         return this.maxStringLength;
     }
@@ -611,7 +634,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * returns the current position of the cursor
      */
-    public int getCursorPosition()
+    @Override
+	public int getCursorPosition()
     {
         return this.cursorPosition;
     }
@@ -619,7 +643,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * get enable drawing background and outline
      */
-    public boolean getEnableBackgroundDrawing()
+    @Override
+	public boolean getEnableBackgroundDrawing()
     {
         return this.enableBackgroundDrawing;
     }
@@ -627,7 +652,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * enable drawing background and outline
      */
-    public void setEnableBackgroundDrawing(boolean par1)
+    @Override
+	public void setEnableBackgroundDrawing(boolean par1)
     {
         this.enableBackgroundDrawing = par1;
     }
@@ -635,7 +661,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Sets the text colour for this textbox (disabled text will not use this colour)
      */
-    public void setTextColor(int par1)
+    @Override
+	public void setTextColor(int par1)
     {
         this.enabledColor = par1;
     }
@@ -648,7 +675,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * setter for the focused field
      */
-    public void setFocused(boolean par1)
+    @Override
+	public void setFocused(boolean par1)
     {
         if (par1 && !this.isFocused)
         {
@@ -661,7 +689,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * getter for the focused field
      */
-    public boolean isFocused()
+    @Override
+	public boolean isFocused()
     {
         return this.isFocused;
     }
@@ -674,7 +703,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * the side of the selection that is not the cursor, maye be the same as the cursor
      */
-    public int getSelectionEnd()
+    @Override
+	public int getSelectionEnd()
     {
         return this.selectionEnd;
     }
@@ -682,7 +712,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * returns the width of the textbox depending on if the the box is enabled
      */
-    public int getWidth()
+    @Override
+	public int getWidth()
     {
         return this.getEnableBackgroundDrawing() ? this.width - 8 : this.width;
     }
@@ -690,7 +721,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Sets the position of the selection anchor (i.e. position the selection was started at)
      */
-    public void setSelectionPos(int par1)
+    @Override
+	public void setSelectionPos(int par1)
     {
         int var2 = this.text.length();
 
@@ -746,7 +778,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * if true the textbox can lose focus by clicking elsewhere on the screen
      */
-    public void setCanLoseFocus(boolean par1)
+    @Override
+	public void setCanLoseFocus(boolean par1)
     {
         this.canLoseFocus = par1;
     }
@@ -754,7 +787,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * @return {@code true} if this textbox is visible
      */
-    public boolean getVisible()
+    @Override
+	public boolean getVisible()
     {
         return this.visible;
     }
@@ -762,7 +796,8 @@ public class GuiTextFieldVRChat extends GuiTextField
     /**
      * Sets whether or not this textbox is visible
      */
-    public void setVisible(boolean par1)
+    @Override
+	public void setVisible(boolean par1)
     {
         this.visible = par1;
     }

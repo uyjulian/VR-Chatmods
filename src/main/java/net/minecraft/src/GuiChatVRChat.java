@@ -1,11 +1,19 @@
 package net.minecraft.src;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.src.*;
+import net.minecraft.util.ChatComponentText;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -43,8 +51,9 @@ public class GuiChatVRChat extends GuiChat
 
     public GuiChatVRChat(GuiChat var1)
     {
-        this.defaultInputFieldText = var1.inputField.getText();
-        this.setWorldAndResolution(var1.mc, var1.width, var1.height);
+    	//TODO: fix gettext
+        //this.defaultInputFieldText = var1.inputField.getText();
+        this.setWorldAndResolution(Minecraft.getMinecraft(), var1.width, var1.height);
     }
 
     public GuiChatVRChat(String par1Str)
@@ -55,13 +64,14 @@ public class GuiChatVRChat extends GuiChat
     /**
      * Adds the buttons (and other controls) to the screen in question.
      */
-    public void initGui()
+    @Override
+	public void initGui()
     {
         GameSettingsVR var1 = LiteModVRChat.getVRsettings();
 
         if (GameSettingsVR.chatClear)
         {
-            ScaledResolution var2 = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+            ScaledResolution var2 = new ScaledResolution(this.mc);
             int var3 = var2.getScaledWidth();
             int var4 = var2.getScaledHeight();
             this.buttonList.add(new GuiButtonClearChat(2, var3 - var3 + 10, var4 - 36));
@@ -69,7 +79,7 @@ public class GuiChatVRChat extends GuiChat
 
         Keyboard.enableRepeatEvents(true);
         this.sentHistoryCursor = this.mc.ingameGUI.getChatGUI().getSentMessages().size();
-        this.inputField = new GuiTextFieldVRChat(this.fontRenderer, 4, this.height - 12, this.width - 4, 12);
+        this.inputField = new GuiTextFieldVRChat(0, this.fontRendererObj, 4, this.height - 12, this.width - 4, 12);
         GameSettingsVR var5 = LiteModVRChat.getVRsettings();
         this.inputField.setMaxStringLength(GameSettingsVR.chatTextFieldMax);
         this.inputField.setEnableBackgroundDrawing(false);
@@ -81,7 +91,8 @@ public class GuiChatVRChat extends GuiChat
     /**
      * Fired when a key is typed. This is the equivalent of KeyListener.keyTyped(KeyEvent e).
      */
-    protected void keyTyped(char par1, int par2)
+    @Override
+	protected void keyTyped(char par1, int par2)
     {
         String var3 = "";
         Boolean var4 = Boolean.valueOf(false);
@@ -90,7 +101,8 @@ public class GuiChatVRChat extends GuiChat
 
         if (par2 == 15)
         {
-            this.completePlayerName();
+        	//TODO: fix
+            //this.completePlayerName();
         }
         else
         {
@@ -108,79 +120,81 @@ public class GuiChatVRChat extends GuiChat
             if (par2 == 28)
             {
                 String var7 = this.inputField.getText().trim();
+                
+                //TODO: fix handleclientcommand
 
-                if (var7.length() > 0)
-                {
-                    this.mc.ingameGUI.getChatGUI().addToSentMessages(var7);
-
-                    if (!this.mc.handleClientCommand(var7))
-                    {
-                        var6 = LiteModVRChat.getVRsettings();
-
-                        if (GameSettingsVR.highLight)
-                        {
-                            var6 = LiteModVRChat.getVRsettings();
-                            GameSettingsVR.myMessage = var7;
-                        }
-
-                        if (var7.length() >= 101)
-                        {
-                            int var8;
-
-                            if (var7.startsWith("/"))
-                            {
-                                var3 = var7.substring(1, var7.indexOf(" "));
-                                var4 = Boolean.valueOf(true);
-
-                                if (var3.contains("msg"))
-                                {
-                                    var8 = var7.indexOf(" ", 4);
-                                    var5 = var7.substring(var8, var7.indexOf(" ", var7.indexOf(" ", var8 + 2)));
-                                    var3 = var3 + var5;
-                                }
-                            }
-
-                            var8 = var7.length() / 90;
-                            int var9 = 0;
-                            int var10;
-
-                            for (var10 = 0; var9 != var8; ++var9)
-                            {
-                                int var11 = var9 * 90;
-                                String var12 = var7.substring(var11, var11 + 90);
-
-                                if (var4.booleanValue() && var9 > 0)
-                                {
-                                    this.mc.thePlayer.sendChatMessage("/" + var3 + " " + var12);
-                                }
-                                else
-                                {
-                                    this.mc.thePlayer.sendChatMessage(var12);
-                                }
-
-                                var10 += 90;
-                            }
-
-                            if (var9 == var8)
-                            {
-                                String var14 = var7.substring(var10, var7.length());
-
-                                if (var4.booleanValue() && var9 > 0)
-                                {
-                                    this.mc.thePlayer.sendChatMessage("/" + var3 + " " + var14);
-                                }
-                                else
-                                {
-                                    this.mc.thePlayer.sendChatMessage(var14);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            this.mc.thePlayer.sendChatMessage(var7);
-                        }
-                    }
-                }
+//                if (var7.length() > 0)
+//                {
+//                    this.mc.ingameGUI.getChatGUI().addToSentMessages(var7);
+//
+//                    if (!this.mc.handleClientCommand(var7))
+//                    {
+//                        var6 = LiteModVRChat.getVRsettings();
+//
+//                        if (GameSettingsVR.highLight)
+//                        {
+//                            var6 = LiteModVRChat.getVRsettings();
+//                            GameSettingsVR.myMessage = var7;
+//                        }
+//
+//                        if (var7.length() >= 101)
+//                        {
+//                            int var8;
+//
+//                            if (var7.startsWith("/"))
+//                            {
+//                                var3 = var7.substring(1, var7.indexOf(" "));
+//                                var4 = Boolean.valueOf(true);
+//
+//                                if (var3.contains("msg"))
+//                                {
+//                                    var8 = var7.indexOf(" ", 4);
+//                                    var5 = var7.substring(var8, var7.indexOf(" ", var7.indexOf(" ", var8 + 2)));
+//                                    var3 = var3 + var5;
+//                                }
+//                            }
+//
+//                            var8 = var7.length() / 90;
+//                            int var9 = 0;
+//                            int var10;
+//
+//                            for (var10 = 0; var9 != var8; ++var9)
+//                            {
+//                                int var11 = var9 * 90;
+//                                String var12 = var7.substring(var11, var11 + 90);
+//
+//                                if (var4.booleanValue() && var9 > 0)
+//                                {
+//                                    this.mc.thePlayer.sendChatMessage("/" + var3 + " " + var12);
+//                                }
+//                                else
+//                                {
+//                                    this.mc.thePlayer.sendChatMessage(var12);
+//                                }
+//
+//                                var10 += 90;
+//                            }
+//
+//                            if (var9 == var8)
+//                            {
+//                                String var14 = var7.substring(var10, var7.length());
+//
+//                                if (var4.booleanValue() && var9 > 0)
+//                                {
+//                                    this.mc.thePlayer.sendChatMessage("/" + var3 + " " + var14);
+//                                }
+//                                else
+//                                {
+//                                    this.mc.thePlayer.sendChatMessage(var14);
+//                                }
+//                            }
+//                        }
+//                        else
+//                        {
+//                            this.mc.thePlayer.sendChatMessage(var7);
+//                        }
+//                    }
+//                }
 
                 var6 = LiteModVRChat.getVRsettings();
 
@@ -245,7 +259,8 @@ public class GuiChatVRChat extends GuiChat
     /**
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
-    protected void actionPerformed(GuiButton var1)
+    @Override
+	protected void actionPerformed(GuiButton var1)
     {
         GameSettingsVR var2 = LiteModVRChat.getVRsettings();
 
@@ -259,15 +274,17 @@ public class GuiChatVRChat extends GuiChat
             if (var1.id == 2)
             {
                 this.mc.ingameGUI.getChatGUI().clearChatMessages();
-                this.mc.ingameGUI.getChatGUI().printChatMessage("** Chat has been cleared **");
+                this.mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText("** Chat has been cleared **"));
             }
         }
     }
 
     /**
      * Handles mouse input.
+     * @throws IOException 
      */
-    public void handleMouseInput()
+    @Override
+	public void handleMouseInput() throws IOException
     {
         super.handleMouseInput();
         int var1 = Mouse.getEventDWheel();
@@ -293,80 +310,82 @@ public class GuiChatVRChat extends GuiChat
             this.mc.ingameGUI.getChatGUI().scroll(var1);
         }
     }
-
-    /**
-     * Called when the mouse is clicked.
-     */
-    protected void mouseClicked(int par1, int par2, int par3)
-    {
-        if (par3 == 0 && this.mc.gameSettings.chatLinks)
-        {
-            ChatClickData var4 = this.mc.ingameGUI.getChatGUI().func_73766_a(Mouse.getX(), Mouse.getY());
-
-            if (var4 != null)
-            {
-                URI var5 = var4.getURI();
-
-                if (var5 != null)
-                {
-                    if (this.mc.gameSettings.chatLinksPrompt)
-                    {
-                        this.clickedURI = var5;
-                        this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, var4.getClickedUrl(), 0,false));
-                    }
-                    else
-                    {
-                        this.func_73896_a(var5);
-                    }
-
-                    return;
-                }
-
-                if (ChatOverhaul.getInstance().settings.copyWordsEnabled && var4.getClickedUrl() != null)
-                {
-                    this.inputField.writeText(ChatOverhaul.getInstance().mouseClicked(var4.getClickedUrl()));
-                    return;
-                }
-            }
-        }
-
-        super.mouseClicked(par1, par2, par3);
-        
-
-    }
-
-    private void func_73896_a(URI par1URI)
-    {
-        try
-        {
-            Class var2 = Class.forName("java.awt.Desktop");
-            Object var3 = var2.getMethod("getDesktop", new Class[0]).invoke((Object)null, new Object[0]);
-            var2.getMethod("browse", new Class[] {URI.class}).invoke(var3, new Object[] {par1URI});
-        }
-        catch (Throwable var4)
-        {
-            var4.printStackTrace();
-        }
-    }
-
-    private void func_73893_a(String par1Str, String par2Str)
-    {
-        if (par1Str.contains("/"))
-        {
-            par1Str = par1Str.substring(1);
-        }
-
-        if (par1Str.length() >= 1)
-        {
-            this.mc.thePlayer.sendQueue.addToSendQueue(new Packet203AutoComplete(par1Str));
-            this.field_73905_m = true;
-        }
-    }
+//
+//    /**
+//     * Called when the mouse is clicked.
+//     */
+//    @Override
+//	protected void mouseClicked(int par1, int par2, int par3)
+//    {
+//        if (par3 == 0 && this.mc.gameSettings.chatLinks)
+//        {
+//            ChatClickData var4 = this.mc.ingameGUI.getChatGUI().func_73766_a(Mouse.getX(), Mouse.getY());
+//
+//            if (var4 != null)
+//            {
+//                URI var5 = var4.getURI();
+//
+//                if (var5 != null)
+//                {
+//                    if (this.mc.gameSettings.chatLinksPrompt)
+//                    {
+//                        this.clickedURI = var5;
+//                        this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, var4.getClickedUrl(), 0,false));
+//                    }
+//                    else
+//                    {
+//                        this.func_73896_a(var5);
+//                    }
+//
+//                    return;
+//                }
+//
+//                if (ChatOverhaul.getInstance().settings.copyWordsEnabled && var4.getClickedUrl() != null)
+//                {
+//                    this.inputField.writeText(ChatOverhaul.getInstance().mouseClicked(var4.getClickedUrl()));
+//                    return;
+//                }
+//            }
+//        }
+//
+//        super.mouseClicked(par1, par2, par3);
+//        
+//
+//    }
+//
+//    private void func_73896_a(URI par1URI)
+//    {
+//        try
+//        {
+//            Class var2 = Class.forName("java.awt.Desktop");
+//            Object var3 = var2.getMethod("getDesktop", new Class[0]).invoke((Object)null, new Object[0]);
+//            var2.getMethod("browse", new Class[] {URI.class}).invoke(var3, new Object[] {par1URI});
+//        }
+//        catch (Throwable var4)
+//        {
+//            var4.printStackTrace();
+//        }
+//    }
+//
+//    private void func_73893_a(String par1Str, String par2Str)
+//    {
+//        if (par1Str.contains("/"))
+//        {
+//            par1Str = par1Str.substring(1);
+//        }
+//
+//        if (par1Str.length() >= 1)
+//        {
+//            this.mc.thePlayer.sendQueue.addToSendQueue(new Packet203AutoComplete(par1Str));
+//            this.field_73905_m = true;
+//        }
+//    }
 
     /**
      * Draws the screen and all the components in it.
      */
-    public void drawScreen(int par1, int par2, float par3)
+    @Override
+	public void drawScreen(int par1, int par2, float par3)
     {
         GameSettingsVR var4 = LiteModVRChat.getVRsettings();
         GameSettingsVR var5;
@@ -399,7 +418,8 @@ public class GuiChatVRChat extends GuiChat
     /**
      * Returns true if this GUI should pause the game when it is displayed in single-player
      */
-    public boolean doesGuiPauseGame()
+    @Override
+	public boolean doesGuiPauseGame()
     {
         return false;
     }

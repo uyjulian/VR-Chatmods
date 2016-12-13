@@ -3,7 +3,7 @@ package vrchatmods.main;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.src.IntHashMap;
+import net.minecraft.util.IntHashMap;
 
 public class GuiChatVRHighlight
 {
